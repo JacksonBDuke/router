@@ -1,0 +1,6 @@
+*.o
+.*.d
+*/
+*
+!sh_router.c
+!.gitignore
