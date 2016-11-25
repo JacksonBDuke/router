@@ -151,6 +151,28 @@ void sr_send_arprequest(struct sr_instance *sr, struct sr_arpreq *req,
   free(reqst_pkt);
 } /* -- sr_send_arprequest -- */
 
+
+/*************
+// Code polishing needs to be done here
+// Validate function calls and variable names
+//************
+
+/* Sends ICMP messages to all the packets waiting on this request */
+void sr_send_icmp_to_waiting(struct sr_instance *sr, struct sr_arpreq *req)
+{
+    struct sr_packet *packet = req->packets;
+    while(packet)
+	{
+        struct sr_if* node = sr_get_interface(sr, packet->iface);
+
+        struct sr_ethernet_hdr *eth = (sr_ethernet_hdr_t *)(packet->buf);
+        struct sr_ip_hdr *ip_hdr = (sr_ip_hdr_t *)(eth + 1);
+        
+        sr_send_icmp3(sr, icmp_unreach, icmp_host_unreach, node->ip, ip_hdr->ip_src, (uint8_t*)ip_hdr, (4*(ip_hdr->ip_hl)) + MORSEL);
+        packet = packet->next;
+    }
+}
+
 /*---------------------------------------------------------------------
  * Method: sr_handle_arpreq(struct sr_instance *sr, 
  *             struct sr_arpreq *req, struct sr_if *out_iface)
@@ -171,8 +193,10 @@ void sr_handle_arpreq(struct sr_instance *sr, struct sr_arpreq *req,
       /* TODO: send ICMP host uncreachable to the source address of all    */
       /* packets waiting on this request                                   */
 
-
-
+	fprintf(stderr, "Sent 5 times, destroying..... \n");
+	// Send an ICMP host unreachable to ALL packets waiting
+	sr_send_icmp_to_waiting(sr, req);
+	sr_arpreq_destroy(cache, req);
 
       /*********************************************************************/
 
@@ -296,9 +320,23 @@ void sr_handlepacket(struct sr_instance* sr,
   /*************************************************************************/
   /* TODO: Handle packets                                                  */
 
+  uint8_t *pkt = malloc(len);
+  memcpy(pkt, packet, len);
 
+  sr_ethernet_hdr_t *hdr = get_ethernet_hdr(pkt);
+  
+  enum sr_ethertype type = ntohs(hdr->ether_type);
+  
+  if (type == ethertype_arp) {
+    char *inf_cpy = malloc(sr_IFACE_NAMELEN);
+    memcpy(inf_cpy, interface, sr_IFACE_NAMELEN);
+    handle_arp(sr, pkt, inf_cpy, len);
+  } else if (type == ethertype_ip) {
+    handle_ip(sr, pkt, len);
+  } else {
+    fprintf(stderr, "invalid packet type id in ethernet header\n");
+  }
 
   /*************************************************************************/
 
 }/* end sr_ForwardPacket */
-
