@@ -49,6 +49,8 @@ void sr_init(struct sr_instance* sr)
     pthread_create(&thread, &(sr->attr), sr_arpcache_timeout, sr);
     
     /* Add initialization code here! */
+    uint8_t icmp_unreach = 0x0000;
+    uint8_t icmp_host_unreach = 0x0001
 
 } /* -- sr_init -- */
 
