@@ -49,8 +49,8 @@ void sr_init(struct sr_instance* sr)
     pthread_create(&thread, &(sr->attr), sr_arpcache_timeout, sr);
     
     /* Add initialization code here! */
-    uint8_t icmp_unreach = 0x0000;
-    uint8_t icmp_host_unreach = 0x0001
+    /*uint8_t icmp_unreach = 0x0000;*/
+    /*uint8_t icmp_host_unreach = 0x0001;*/
 
 } /* -- sr_init -- */
 
@@ -162,6 +162,8 @@ void sr_send_arprequest(struct sr_instance *sr, struct sr_arpreq *req,
 /* Sends ICMP messages to all the packets waiting on this request */
 void sr_send_icmp_to_waiting(struct sr_instance *sr, struct sr_arpreq *req)
 {
+  uint8_t icmp_unreach = 0x0000;
+  uint8_t icmp_host_unreach = 0x0001;
     struct sr_packet *packet = req->packets;
     while(packet)
 	{
@@ -169,11 +171,29 @@ void sr_send_icmp_to_waiting(struct sr_instance *sr, struct sr_arpreq *req)
 
         struct sr_ethernet_hdr *eth = (sr_ethernet_hdr_t *)(packet->buf);
         struct sr_ip_hdr *ip_hdr = (sr_ip_hdr_t *)(eth + 1);
-        
+
+	/*MORSEL is the first 8 bytes of the packet's original datagram.*/  
+	/*uint8_t MORSEL = (0xFF & (uint8_t)packet);*/
+	uint8_t MORSEL = (uint8_t)packet;
         sr_send_icmp3(sr, icmp_unreach, icmp_host_unreach, node->ip, ip_hdr->ip_src, (uint8_t*)ip_hdr, (4*(ip_hdr->ip_hl)) + MORSEL);
         packet = packet->next;
     }
 }
+
+/**********************************************************************/
+/* TODO: Build and send ICMP3 packets.                                */
+/**********************************************************************/
+/*---------------------------------------------------------------------
+ * Method sr_send_icmp3(structure sr_instance *sr,
+ *             
+ *
+ *
+ *
+ *---------------------------------------------------------------------*/
+void sr_send_icmp3(struct sr_instance *sr, uint8_t icmp_unr, uint8_t icmp_hunr, uint32_t ip, ){
+
+
+}/* -- sr_send_icmp3 -- */
 
 /*---------------------------------------------------------------------
  * Method: sr_handle_arpreq(struct sr_instance *sr, 
@@ -196,9 +216,8 @@ void sr_handle_arpreq(struct sr_instance *sr, struct sr_arpreq *req,
       /* packets waiting on this request                                   */
 
 	fprintf(stderr, "Sent 5 times, destroying..... \n");
-	// Send an ICMP host unreachable to ALL packets waiting
+	/* Send an ICMP host unreachable to ALL packets waiting*/
 	sr_send_icmp_to_waiting(sr, req);
-	sr_arpreq_destroy(cache, req);
 
       /*********************************************************************/
 
@@ -276,7 +295,24 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
       /*********************************************************************/
       /* TODO: send all packets on the req->packets linked list            */
 
+      struct sr_packet *pk_st = req->packets;
+      while(pk_st){
+	/*
+	sr_ethernet_hdr_t *ehdnr_pk = (sr_ethernet_hdr_t *) pk_st->buf;
+	struct sr_if *sending_if = sr_get_interface(sr, interface);
+	memcpy(ehdr_pk->ether_dhost, arp_hdr->ar_sha, ETHER_ADDR_LEN);
+	memcpy(ehdr_pk->ether_shost, sending_if->addr, ETHER_ADDR_LEN);
+	sr_ip_hdr_t *ip_hdr = (sr_ip_hdr_t *) (pk_st->buf + sizeof(sr_ethernet_hdr_t));
+	ip_hdr->ip_sum = 0;
+	ip_hdr->ip_ttl -= 1;
+	ip_hdr->ip_sum = cksum(ip_hdr, ip_hdr->ip_hl*4);
+	sr_send_packet(sr, pk_st->buf, pk_st->len, interface);
+	pk_st = pk_st->next;
+	*/
+	sr_send_arprequest(sr, pk_st, src_iface);
+	pk_st = pk_st->next;
 
+      }
 
       /*********************************************************************/
 
@@ -332,7 +368,8 @@ void sr_handlepacket(struct sr_instance* sr,
   if (type == ethertype_arp) {
     char *inf_cpy = malloc(sr_IFACE_NAMELEN);
     memcpy(inf_cpy, interface, sr_IFACE_NAMELEN);
-    handle_arp(sr, pkt, inf_cpy, len);
+    /*handle_arp(sr, pkt, inf_cpy, len);*/
+    sr_handlepacket_arp(sr, pkt, len, inf_cpy);
   } else if (type == ethertype_ip) {
     handle_ip(sr, pkt, len);
   } else {
@@ -341,4 +378,4 @@ void sr_handlepacket(struct sr_instance* sr,
 
   /*************************************************************************/
 
-}/* end sr_ForwardPacket */
+}/* end sr_ForwardPacket*/
