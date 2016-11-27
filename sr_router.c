@@ -181,7 +181,8 @@ void sr_send_icmp_to_waiting(struct sr_instance *sr, struct sr_arpreq *req)
 }
 
 /**********************************************************************/
-/* TODO: Build and send ICMP3 packets.                                */
+/* TODO: Build and send ICMP(type 3) packets. Need to figure out if   */
+/*       the code should be 0 or 1 (network or host unreacheable).    */
 /**********************************************************************/
 /*---------------------------------------------------------------------
  * Method sr_send_icmp3(structure sr_instance *sr,
