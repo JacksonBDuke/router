@@ -507,9 +507,10 @@ void sr_handlepacket(struct sr_instance* sr,
   if (type == ethertype_arp) {
     char *inf_cpy = malloc(sr_IFACE_NAMELEN);
     memcpy(inf_cpy, interface, sr_IFACE_NAMELEN);
-    handle_arp(sr, pkt, inf_cpy, len);
+    sr_handlepacket_arp(sr, pkt, len, inf_cpy);
   } else if (type == ethertype_ip) {
-    handle_ip(sr, pkt, len);
+    /* STILL NEED TO ADD THIS
+       handle_ip(sr, pkt, len);*/
   } else {
     fprintf(stderr, "invalid packet type id in ethernet header\n");
   }

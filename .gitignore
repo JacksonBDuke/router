@@ -2,5 +2,7 @@
 .*.d
 */
 *
-!sh_router.c
+!sr_router.c
 !.gitignore
+!sr_router.h
+!sr_protocol.h
