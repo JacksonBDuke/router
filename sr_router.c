@@ -497,20 +497,13 @@ void sr_handlepacket(struct sr_instance* sr,
   /*************************************************************************/
   /* TODO: Handle packets                                                  */
 
-  uint8_t *pkt = malloc(len);
-  memcpy(pkt, packet, len);
-
-  sr_ethernet_hdr_t *hdr = get_ethernet_hdr(pkt);
-  
-  enum sr_ethertype type = ntohs(hdr->ether_type);
+  uint16_t type = ethertype(packet);
   
   if (type == ethertype_arp) {
-    char *inf_cpy = malloc(sr_IFACE_NAMELEN);
-    memcpy(inf_cpy, interface, sr_IFACE_NAMELEN);
-    sr_handlepacket_arp(sr, pkt, len, inf_cpy);
+    sr_handlepacket_arp(sr, packet, len, interface);
   } else if (type == ethertype_ip) {
     /* STILL NEED TO ADD THIS
-       handle_ip(sr, pkt, len);*/
+       handle_ip(sr, packet, len);*/
   } else {
     fprintf(stderr, "invalid packet type id in ethernet header\n");
   }
