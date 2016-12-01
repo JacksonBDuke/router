@@ -191,10 +191,21 @@ void sr_send_icmp_to_waiting(struct sr_instance *sr, struct sr_arpreq *req)
  *
  *
  *---------------------------------------------------------------------*/
-void sr_send_icmp3(struct sr_instance *sr, uint8_t icmp_unr, uint8_t icmp_hunr, uint32_t ip, ){
+void sr_send_icmp3(struct sr_instance *sr, enum icmp_unr, enum icmp_hunr, uint32_t ip_source, uint32_t ip_dest, uint8_t *data, unsigned int len){
+  int icmp_len = sizeof(sr_icmp_t3_hdr_t);
 
+  struct sr_icmp_t3_hdr *icmp = calloc(1, icmp_len);
+  memcpy(icmp->data, data, len);
+  icmp->icmp_type = type;
+  icmp->icmp_code = code;
+  icmp->icmp_sum - 0;
+  icmp->ecmp_sum = cksum(icmp, icmp_len);
 
 }/* -- sr_send_icmp3 -- */
+
+void sr_send_ip(struct sr_instance *sr, enum sr_ip_protocol protocol, uint32_t source, uint32_t dest, uint8_t *buf, unsigned int len){
+
+}
 
 /*---------------------------------------------------------------------
  * Method: sr_handle_arpreq(struct sr_instance *sr, 
