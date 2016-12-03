@@ -518,6 +518,15 @@ void sr_handlepacket(struct sr_instance* sr,
 
 }/* end sr_ForwardPacket */
 
+struct sr_if *sr_packet_is_for_me(struct sr_instance *sr, uint32_t ip_dest) {
+	struct sr_if *node = sr->if_list;
+	while (node) {
+		if (node->ip == ip_dest)return node;
+		node = node->next;
+	}
+	return NULL;
+}
+
 void sr_handlepacket_ip(struct sr_instance* sr, uint8_t * packet, unsigned int len, char* interface) {
 
 	int min_length = sizeof(sr_ip_hdr_t) + sizeof(sr_ethernet_hdr_t);
@@ -612,14 +621,7 @@ void sr_ip_packet_for_me(struct sr_instance *sr, struct sr_ip_hdr *ip_hdr) {
 }
 
 /* Checks to see if a given IP packet was meant for me */
-struct sr_if *sr_packet_is_for_me(struct sr_instance *sr, uint32_t ip_dest) {
-	struct sr_if *node = sr->if_list;
-	while (node) {
-		if (node->ip == ip_dest)return node;
-		node = node->next;
-	}
-	return NULL;
-}
+
 
 void sr_send_icmp(struct sr_instance *sr, enum sr_icmp_type type, enum sr_icmp_code code, uint32_t ip_source, uint32_t ip_dest, uint8_t *buf, unsigned int len) {
 
