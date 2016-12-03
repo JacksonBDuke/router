@@ -453,16 +453,16 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
 
 		struct sr_packet *packet_walker = req->packets;
         while(packet_walker){
-            // forward the packets
+            /*forward the packets*/
             uint8_t *fwd_packet = packet_walker->buf;
             sr_ethernet_hdr_t *fwd_eth_hdr = get_ethernet_hdr(fwd_packet, packet_walker->len);
             
-            // set destination mac address
+            /*set destination mac address*/
             memcpy(fwd_eth_hdr->ether_dhost, arphdr->ar_sha, ETHER_ADDR_LEN);
-            // set out src_iface
+            /*set out src_iface*/
             memcpy(fwd_eth_hdr->ether_dhost, src_iface->addr, ETHER_ADDR_LEN);
             
-            // re-calculate checksum
+            /*re-calculate checksum*/
             
             sr_ip_hdr_t *fwd_ip_hdr = (sr_ip_hdr_t*)(fwd_packet + sizeof(sr_ethernet_hdr_t));
  
