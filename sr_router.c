@@ -32,7 +32,7 @@
 #define ICMP_IP_HDR_LEN_BYTE 20
 #define ICMP_TYPE3_LEN 36
 
-
+#define TTL 64
 /*---------------------------------------------------------------------
  * Method: sr_init(void)
  * Scope:  Global
