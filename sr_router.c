@@ -580,7 +580,7 @@ void sr_handlepacket_ip(struct sr_instance* sr, uint8_t * packet, unsigned int l
 		fprintf(stderr, "No routing table match, send ICMP\n");
 		struct sr_if *my_source = sr_get_interface(sr, interface);
 		/*******************************************************/
-		sr_send_icmp3(sr, icmp_unreach, icmp_network_unreach, my_source->ip, iphdr->ip_src, (uint8_t*)iphdr, ip_hdr_len + SNIPPIT);
+		sr_send_icmp3(sr, type_dst_unreach, code_net_unreach, my_source->ip, iphdr->ip_src, (uint8_t*)iphdr, ip_hdr_len + SNIPPIT);
 		/*******************************************************/
 	}
 }
