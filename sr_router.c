@@ -607,7 +607,7 @@ void sr_ip_packet_for_me(struct sr_instance *sr, struct sr_ip_hdr *ip_hdr) {
 	else {
 		/*Assuming its TCP or UDP*/
 		fprintf(stderr, "Its NOT an ICMP packet! Send Unreachable!!\n");
-		sr_send_icmp3(sr, type_dst_unreach, code_port_unreach, ip_hdr->ip_dst, ip_hdr->ip_src, (uint8_t*)ip_hdr, ip_hdr_len + MORSEL);
+		sr_send_icmp3(sr, type_dst_unreach, code_port_unreach, ip_hdr->ip_dst, ip_hdr->ip_src, (uint8_t*)ip_hdr, ip_hdr_len + SNIPPIT);
 	}
 }
 
