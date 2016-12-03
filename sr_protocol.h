@@ -164,7 +164,7 @@ struct sr_ethernet_hdr
 typedef struct sr_ethernet_hdr sr_ethernet_hdr_t;
 
 enum sr_ip_v {
-	ip_v = 4;
+	ip_v = 4
 };
 enum sr_icmp_type
 { 
