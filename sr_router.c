@@ -586,7 +586,7 @@ void sr_handlepacket_ip(struct sr_instance* sr, uint8_t * packet, unsigned int l
 }
 
 /* Checks to see if a given IP packet was meant for me */
-struct sr_if * sr_packet_is_for_me(struct sr_instance *sr, uint32_t ip_dest) {
+struct sr_if *sr_packet_is_for_me(struct sr_instance *sr, uint32_t ip_dest) {
 	struct sr_if *node = sr->if_list;
 	while (node) {
 		if (node->ip == ip_dest)return node;
