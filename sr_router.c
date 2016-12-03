@@ -545,7 +545,7 @@ void sr_handlepacket_ip(struct sr_instance* sr, uint8_t * packet, unsigned int l
 		uint8_t * buf = calloc(4 + ip_hdr_len + SNIPPIT, 1);
 		memcpy(buf + 4, iphdr, ip_hdr_len + SNIPPIT);
 		/*******************************************************/
-		sr_send_icmp(sr, icmp_ttl, icmp_ttl_code, iphdr->ip_dst, iphdr->ip_src, buf, 4 + ip_hdr_len + SNIPPIT);
+		sr_send_icmp(sr, type_time_exceeded, code_ttl_expired, iphdr->ip_dst, iphdr->ip_src, buf, 4 + ip_hdr_len + SNIPPIT);
 		/*******************************************************/
 		free(buf);
 		return;
