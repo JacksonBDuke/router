@@ -472,7 +472,7 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
             fwd_ip_hdr->ip_sum = cksum(fwd_ip_hdr, sizeof(sr_ip_hdr_t));
             sr_send_packet(sr, fwd_packet, packet_walker->len, src_iface->name);
 			*/
-            sr_send_arprequest(sr, packet_walker, packet_walker->out_iface)
+            sr_send_arprequest(sr, packet_walker, packet_walker->out_iface);
             packet_walker = packet_walker->next;
   
         }
