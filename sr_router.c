@@ -585,6 +585,32 @@ void sr_handlepacket_ip(struct sr_instance* sr, uint8_t * packet, unsigned int l
 	}
 }
 
+/* Handles an IP packet that is meant for me
+If it is ICMP echo, then we send reply, otherwise, if it is TCP or UDP,
+we send an port unreachable back to sender
+*/
+void sr_ip_packet_for_me(struct sr_instance *sr, struct sr_ip_hdr *ip_hdr) {
+
+	unsigned int ip_hdr_len = ip_hdr->ip_hl * 4;
+	uint8_t *ip_payload = ((uint8_t *)ip_hdr) + ip_hdr_len;
+	if (ip_hdr->ip_p == ip_protocol_icmp) {
+
+		struct sr_icmp_hdr * icmp_hdr = (sr_icmp_hdr_t *)(ip_payload);
+		unsigned int icmp_payload_len = ntohs(ip_hdr->ip_len) - ip_hdr_len - sizeof(sr_icmp_hdr_t);
+
+		if (icmp_hdr->icmp_type == type_echo_request) {
+
+			sr_send_icmp(sr, type_echo_reply, code_echo_reply_code, ip_hdr->ip_dst, ip_hdr->ip_src, (uint8_t *)(icmp_hdr + 1), icmp_payload_len);
+		}
+
+	}
+	else {
+		//Assuming its TCP or UDP
+		fprintf(stderr, "Its NOT an ICMP packet! Send Unreachable!!\n");
+		sr_send_icmp3(sr, type_dst_unreach, code_port_unreach, ip_hdr->ip_dst, ip_hdr->ip_src, (uint8_t*)ip_hdr, ip_hdr_len + MORSEL);
+	}
+}
+
 /* Checks to see if a given IP packet was meant for me */
 struct sr_if *sr_packet_is_for_me(struct sr_instance *sr, uint32_t ip_dest) {
 	struct sr_if *node = sr->if_list;
