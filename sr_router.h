@@ -30,6 +30,8 @@
 #define INIT_TTL 255
 #define PACKET_DUMP_SIZE 1024
 
+#define SNIPPIT 8
+
 /* forward declare */
 struct sr_if;
 struct sr_rt;
