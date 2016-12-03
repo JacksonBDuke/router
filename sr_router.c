@@ -570,7 +570,9 @@ void sr_handlepacket_ip(struct sr_instance* sr, uint8_t * packet, unsigned int l
 		memcpy(eth_hdr->ether_shost, node->addr, ETHER_ADDR_LEN);
 
 		/*******************************************************/
-		sr_send_packet(sr, match->gw.s_addr, temp, len, match->interface);
+		/*sr_send_packet(sr, match, temp, len, match->interface);*/
+		sr_send_packet(sr, temp, len, match->interface);
+		/*sr_send_packet(sr, reply_pkt, reply_len, src_iface->name);*/
 		/*******************************************************/
 		free(temp);
 	}
@@ -657,7 +659,10 @@ void sr_send_ip(struct sr_instance *sr, enum sr_ip_protocol protocol, uint32_t s
 	eth->ether_type = htons(ethertype_ip);
 	memcpy(eth->ether_shost, if_node->addr, ETHER_ADDR_LEN);
 
-	sr_send_packet(sr, rt_node->gw.s_addr, (uint8_t *)eth, sizeof(sr_ethernet_hdr_t) + ip_len + len, if_node->name);
+	sr_send_packet(sr, rt_node, sizeof(sr_ethernet_hdr_t) + ip_len + len, if_node->name);
+	/*sr_send_packet(sr, rt_node, sizeof(sr_ethernet_hdr_t) + ip_len + len, if_node->name);*/
+	/*sr_send_ip(sr, ip_protocol_icmp, ip_source, ip_dest, (uint8_t *)icmp, icmp_len);*/
+	/*sr_send_packet(sr, reply_pkt, reply_len, src_iface->name);*/
 
 	free(eth);
 }
