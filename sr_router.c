@@ -454,22 +454,25 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
 		struct sr_packet *packet_walker = req->packets;
         while(packet_walker){
             /*forward the packets*/
+			/*
             uint8_t *fwd_packet = packet_walker->buf;
             struct sr_ethernet_hdr_t *fwd_eth_hdr = get_ethernet_hdr(fwd_packet, packet_walker->len);
+			*/
             
             /*set destination mac address*/
-            memcpy(fwd_eth_hdr->ether_dhost, arphdr->ar_sha, ETHER_ADDR_LEN);
+            /*memcpy(fwd_eth_hdr->ether_dhost, arphdr->ar_sha, ETHER_ADDR_LEN);*/
             /*set out src_iface*/
-            memcpy(fwd_eth_hdr->ether_dhost, src_iface->addr, ETHER_ADDR_LEN);
+            /*memcpy(fwd_eth_hdr->ether_dhost, src_iface->addr, ETHER_ADDR_LEN);*/
             
             /*re-calculate checksum*/
-            
+            /*
             struct sr_ip_hdr_t *fwd_ip_hdr = (sr_ip_hdr_t*)(fwd_packet + sizeof(sr_ethernet_hdr_t));
  
             fwd_ip_hdr->ip_sum = 0;
             fwd_ip_hdr->ip_sum = cksum(fwd_ip_hdr, sizeof(sr_ip_hdr_t));
             sr_send_packet(sr, fwd_packet, packet_walker->len, src_iface->name);
-            
+			*/
+            sr_send_arprequest(sr, packet_walker, packet_walker->out_iface)
             packet_walker = packet_walker->next;
   
         }
