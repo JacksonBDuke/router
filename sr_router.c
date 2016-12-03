@@ -373,7 +373,7 @@ void sr_handle_arpreq(struct sr_instance *sr, struct sr_arpreq *req,
           } else {
               sr_arpreq_destroy(&sr->cache, req);
           }
-} 
+	} 
 
       /*********************************************************************/
 
