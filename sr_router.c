@@ -453,7 +453,7 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
 
 		struct sr_packet *pk_st = req->packets;
 		while (pk_st) {
-			sr_send_arprequest(sr, pk_st, sr_iface);
+			sr_send_arprequest(sr, pk_st, src_iface);
 			pk_st = pk_st->next;
 		}
 
