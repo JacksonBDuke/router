@@ -600,7 +600,7 @@ void sr_ip_packet_for_me(struct sr_instance *sr, struct sr_ip_hdr *ip_hdr) {
 
 		if (icmp_hdr->icmp_type == type_echo_request) {
 
-			sr_send_icmp(sr, type_echo_reply, code_echo_reply_code, ip_hdr->ip_dst, ip_hdr->ip_src, (uint8_t *)(icmp_hdr + 1), icmp_payload_len);
+			sr_send_icmp(sr, type_echo_reply, code_echo_reply, ip_hdr->ip_dst, ip_hdr->ip_src, (uint8_t *)(icmp_hdr + 1), icmp_payload_len);
 		}
 
 	}
