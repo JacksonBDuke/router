@@ -532,7 +532,7 @@ void sr_handlepacket(struct sr_instance* sr,
   /* TODO: Handle packets                                                  */
 
   uint16_t type = ethertype(packet);
-  
+  print_hdrs(packet, len);
   if (type == ethertype_arp) {
 	  printf("Processing ARP packet.\n");
 
