@@ -479,7 +479,7 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
 				memcpy(fwd_eth_hdr->ether_dhost, src_iface->addr, ETHER_ADDR_LEN);
 				
 				/*re-calculate checksum*/
-				struct sr_ip_hdr_t *fwd_ip_hdr = (sr_ip_hdr_t*)(fwd_packet + sizeof(sr_ethernet_hdr_t)
+				struct sr_ip_hdr_t *fwd_ip_hdr = (sr_ip_hdr_t*)(fwd_packet + sizeof(sr_ethernet_hdr_t);
 	 
 				fwd_ip_hdr->ip_sum = 0;
 				fwd_ip_hdr->ip_sum = cksum(fwd_ip_hdr, sizeof(sr_ip_hdr_t));
