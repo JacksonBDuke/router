@@ -550,7 +550,7 @@ void sr_handlepacket(struct sr_instance* sr,
   uint8_t *pkt = malloc(len);
   memcpy(pkt, packet, len);
 
-  sr_ethernet_hdr_t *hdr = get_ethernet_hdr(pkt);
+  sr_ethernet_hdr_t *hdr = get_eth_hdr(pkt, len);
   
   enum sr_ethertype type = ntohs(hdr->ether_type);
   
@@ -569,6 +569,14 @@ void sr_handlepacket(struct sr_instance* sr,
   /*************************************************************************/
 
 }/* end sr_ForwardPacket */
+
+sr_ethernet_hdr_t *get_eth_hdr(uint8_t *packet, unsigned int len) {
+  if(len < sizeof(sr_ethernet_hdr_t)){
+    assert(0);
+    return NULL;
+  }
+  return (sr_ethernet_hdr_t*) packet;
+}
 
 struct sr_if *sr_packet_is_for_me(struct sr_instance *sr, uint32_t ip_dest) {
 	struct sr_if *node = sr->if_list;
