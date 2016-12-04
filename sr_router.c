@@ -467,25 +467,24 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
 			while(packet_walker){
 				printf("Sending all packets in linked list...\n");
 				/*forward the packets*/
-				/*
 				uint8_t *fwd_packet = packet_walker->buf;
-				struct sr_ethernet_hdr_t *fwd_eth_hdr = get_ethernet_hdr(fwd_packet, packet_walker->len);
-				*/
+				
+				/*struct sr_ethernet_hdr_t *fwd_eth_hdr = get_ethernet_hdr(fwd_packet, packet_walker->len);*/
+				
+				struct sr_ethernet_hdr_t *fwd_eth_hdr = (sr_ethernet_hdr_t*) packet;
 				
 				/*set destination mac address*/
-				/*memcpy(fwd_eth_hdr->ether_dhost, arphdr->ar_sha, ETHER_ADDR_LEN);*/
+				memcpy(fwd_eth_hdr->ether_dhost, arphdr->ar_sha, ETHER_ADDR_LEN);
 				/*set out src_iface*/
-				/*memcpy(fwd_eth_hdr->ether_dhost, src_iface->addr, ETHER_ADDR_LEN);*/
+				memcpy(fwd_eth_hdr->ether_dhost, src_iface->addr, ETHER_ADDR_LEN);
 				
 				/*re-calculate checksum*/
-				/*
-				struct sr_ip_hdr_t *fwd_ip_hdr = (sr_ip_hdr_t*)(fwd_packet + sizeof(sr_ethernet_hdr_t));
+				struct sr_ip_hdr_t *fwd_ip_hdr = (sr_ip_hdr_t*)(fwd_packet + sizeof(sr_ethernet_hdr_t)
 	 
 				fwd_ip_hdr->ip_sum = 0;
 				fwd_ip_hdr->ip_sum = cksum(fwd_ip_hdr, sizeof(sr_ip_hdr_t));
 				sr_send_packet(sr, fwd_packet, packet_walker->len, src_iface->name);
-				*/
-				sr_send_arprequest(sr, packet_walker, src_iface);
+				/*sr_send_arprequest(sr, packet_walker, src_iface);*/
 				packet_walker = packet_walker->next;
 	  
 			}
@@ -573,14 +572,6 @@ void sr_handlepacket(struct sr_instance* sr,
   /*************************************************************************/
 
 }/* end sr_ForwardPacket */
-
-sr_ethernet_hdr_t *get_eth_hdr(uint8_t *packet, unsigned int len) {
-  if(len < sizeof(sr_ethernet_hdr_t)){
-    assert(0);
-    return NULL;
-  }
-  return (sr_ethernet_hdr_t*) packet;
-}
 
 struct sr_if *sr_packet_is_for_me(struct sr_instance *sr, uint32_t ip_dest) {
 	struct sr_if *node = sr->if_list;
