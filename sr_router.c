@@ -550,7 +550,7 @@ void sr_handlepacket(struct sr_instance* sr,
   uint8_t *pkt = malloc(len);
   memcpy(pkt, packet, len);
 
-  sr_ethernet_hdr_t *hdr = get_eth_hdr(pkt, len);
+  sr_ethernet_hdr_t *hdr = (sr_ethernet_hdr_t*) packet;
   
   enum sr_ethertype type = ntohs(hdr->ether_type);
   
