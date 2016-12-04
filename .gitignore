@@ -2,7 +2,12 @@
 .*.d
 */
 *
-!sr_router.c
 !.gitignore
+!sr_router.c
 !sr_router.h
 !sr_protocol.h
+!sr_nat.c
+!sr_nat.h
+!sr_utils.c
+!sr_utils.h
+!sr_vns_comm.c
