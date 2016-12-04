@@ -437,6 +437,9 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
 		{
 			printf("Request is for me...\n");
 			sr_send_arpreply(sr, pkt, len, src_iface); }
+		else{
+			sr_handle_arpreq(sr, pkt, len, src_iface);
+		}
 		break;
 	  }
 	  case arp_op_reply:
