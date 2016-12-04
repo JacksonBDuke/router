@@ -585,7 +585,7 @@ void sr_handlepacket_ip(struct sr_instance* sr, uint8_t * packet, unsigned int l
 	iphdr->ip_sum = 0;
 	iphdr->ip_sum = cksum(iphdr, ip_hdr_len);
 
-	struct sr_rt *match = longest_prefix_match(sr, iphdr->ip_dst);
+	struct sr_rt *match = longest_prefix_matching(sr, iphdr->ip_dst);
 	if (match) {
 
 		uint8_t *temp = malloc(len);
@@ -677,7 +677,7 @@ void sr_send_icmp3(struct sr_instance *sr, enum sr_icmp_type type, enum sr_icmp_
 /* Sends an IP packet. Builds an IP and populates the fields accordingly */
 void sr_send_ip(struct sr_instance *sr, enum sr_ip_protocol protocol, uint32_t source, uint32_t dest, uint8_t *buf, unsigned int len) {
 
-	struct sr_rt * rt_node = longest_prefix_match(sr, dest);
+	struct sr_rt * rt_node = longest_prefix_matching(sr, dest);
 
 	if (!rt_node) {
 		fprintf(stderr, "No match in routing table.....should return because otherwise would send message to self\n");
