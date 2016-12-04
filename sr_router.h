@@ -15,6 +15,9 @@
 
 #include "sr_protocol.h"
 #include "sr_arpcache.h"
+#include "sr_nat.h"
+#include "sr_rt.h"
+
 
 /* we dont like this debug , but what to do for varargs ? */
 #ifdef _DEBUG_
@@ -63,21 +66,42 @@ int sr_verify_routing_table(struct sr_instance* sr);
 int sr_send_packet(struct sr_instance* , uint8_t* , unsigned int , const char*);
 int sr_connect_to_server(struct sr_instance* ,unsigned short , char* );
 int sr_read_from_server(struct sr_instance* );
+int sr_arp_req_not_for_us(struct sr_instance*, uint8_t *, unsigned int, char*);
 
 /* -- sr_router.c -- */
 void sr_init(struct sr_instance* );
 void sr_handlepacket(struct sr_instance* , uint8_t * , unsigned int , char* );
-struct sr_rt* longest_prefix_matching(struct sr_instance *sr, uint32_t ip_dest);
+void arp_handlepacket(struct sr_instance*, uint8_t *, unsigned int, char *);
+void ip_handlepacket(struct sr_instance*, uint8_t *, unsigned int, char *);
+void ip_handlepacketforme(struct sr_instance *sr, sr_ip_hdr_t *ip_hdr, char *interface);
+void ip_forwardpacket(struct sr_instance *sr, sr_ip_hdr_t *ip_hdr, unsigned int len, char *interface);
+void build_arp_reply(struct sr_instance *, struct sr_arp_hdr *arp_hdr, struct sr_if *r_iface);
 void sr_handle_arpreq(struct sr_instance *sr, struct sr_arpreq *req,
     struct sr_if *out_iface);
 void sr_add_ethernet_send(struct sr_instance *sr, uint8_t *packet,
-    unsigned int len, uint32_t dip, enum sr_ethertype type); 
+    unsigned int len, uint32_t dip, enum sr_ethertype type);
+void sr_icmp_with_payload(struct sr_instance *sr, sr_ip_hdr_t *ip_hdr, char *interface, uint8_t icmp_type, uint8_t icmp_code);
+
+int arp_validpacket(uint8_t *packet, unsigned int len);
+int ip_validpacket(uint8_t *packet, unsigned int len);
+int sr_packet_is_for_me(struct sr_instance* sr, uint32_t ip_dst);
+
+struct sr_rt* longest_prefix_matching(struct sr_instance *sr, uint32_t ip_dest);
 struct sr_icmp_t3_hdr icmp_send_error_packet(struct sr_ip_hdr *ip_hdr, int code_num);
+
 
 /* -- sr_if.c -- */
 void sr_add_interface(struct sr_instance* , const char* );
 void sr_set_ether_ip(struct sr_instance* , uint32_t );
 void sr_set_ether_addr(struct sr_instance* , const unsigned char* );
 void sr_print_if_list(struct sr_instance* );
+
+/* -- sr_nat.c -- */
+
+void sr_nat_handle_ip_packet(struct sr_instance *sr, sr_ip_hdr_t *ipPacket,
+                        unsigned int length, struct sr_if *r_interface);
+void sr_nat_undo_mapping(struct sr_instance *sr, sr_ip_hdr_t *ip_hdr, unsigned int length, 
+struct sr_if *r_interface);
+
 
 #endif /* SR_ROUTER_H */
