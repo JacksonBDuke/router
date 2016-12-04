@@ -417,7 +417,7 @@ void sr_waitforarp(struct sr_instance *sr, uint8_t *pkt,
 void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
     unsigned int len, struct sr_if *src_iface)
 {
-	printf("Inside sr_handlepacket_arp");
+	printf("Inside sr_handlepacket_arp\n");
   /* Drop packet if it is less than the size of Ethernet and ARP headers */
   if (len < (sizeof(sr_ethernet_hdr_t) + sizeof(sr_arp_hdr_t)))
   {
@@ -429,68 +429,70 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
 
   switch (ntohs(arphdr->ar_op))
   {
-  case arp_op_request:
-  {
-    /* Check if request is for one of my interfaces */
-    if (arphdr->ar_tip == src_iface->ip)
-    {
-		printf("Request is for me...");
-		sr_send_arpreply(sr, pkt, len, src_iface); }
-    break;
-  }
-  case arp_op_reply:
-  {
-    /* Check if reply is not? for one of my interfaces */
-    if (arphdr->ar_tip != src_iface->ip)
-    {	printf("Not one of my interfaces..."); break; }
+	  case arp_op_request:
+	  {
+		  printf("arp_op_request\n");
+		/* Check if request is for one of my interfaces */
+		if (arphdr->ar_tip == src_iface->ip)
+		{
+			printf("Request is for me...\n");
+			sr_send_arpreply(sr, pkt, len, src_iface); }
+		break;
+	  }
+	  case arp_op_reply:
+	  {
+		  printf("arp_op_reply\n");
+		/* Check if reply is not? for one of my interfaces */
+		if (arphdr->ar_tip != src_iface->ip)
+		{	printf("Not one of my interfaces...\n"); break; }
 
-    /* Update ARP cache with contents of ARP reply */
-    struct sr_arpreq *req = sr_arpcache_insert(&(sr->cache), arphdr->ar_sha, 
-        arphdr->ar_sip);
+		/* Update ARP cache with contents of ARP reply */
+		struct sr_arpreq *req = sr_arpcache_insert(&(sr->cache), arphdr->ar_sha, 
+			arphdr->ar_sip);
 
-    /* Process pending ARP request entry, if there is one */
-    if (req != NULL)
-    {
-      /*********************************************************************/
-      /* TODO: send all packets on the req->packets linked list            */
+		/* Process pending ARP request entry, if there is one */
+		if (req != NULL)
+		{
+		  /*********************************************************************/
+		  /* TODO: send all packets on the req->packets linked list            */
 
-		struct sr_packet *packet_walker = req->packets;
-        while(packet_walker){
-			printf("Sending all packets in linked list...");
-            /*forward the packets*/
-			/*
-            uint8_t *fwd_packet = packet_walker->buf;
-            struct sr_ethernet_hdr_t *fwd_eth_hdr = get_ethernet_hdr(fwd_packet, packet_walker->len);
-			*/
-            
-            /*set destination mac address*/
-            /*memcpy(fwd_eth_hdr->ether_dhost, arphdr->ar_sha, ETHER_ADDR_LEN);*/
-            /*set out src_iface*/
-            /*memcpy(fwd_eth_hdr->ether_dhost, src_iface->addr, ETHER_ADDR_LEN);*/
-            
-            /*re-calculate checksum*/
-            /*
-            struct sr_ip_hdr_t *fwd_ip_hdr = (sr_ip_hdr_t*)(fwd_packet + sizeof(sr_ethernet_hdr_t));
- 
-            fwd_ip_hdr->ip_sum = 0;
-            fwd_ip_hdr->ip_sum = cksum(fwd_ip_hdr, sizeof(sr_ip_hdr_t));
-            sr_send_packet(sr, fwd_packet, packet_walker->len, src_iface->name);
-			*/
-            sr_send_arprequest(sr, packet_walker, src_iface);
-            packet_walker = packet_walker->next;
-  
-        }
+			struct sr_packet *packet_walker = req->packets;
+			while(packet_walker){
+				printf("Sending all packets in linked list...\n");
+				/*forward the packets*/
+				/*
+				uint8_t *fwd_packet = packet_walker->buf;
+				struct sr_ethernet_hdr_t *fwd_eth_hdr = get_ethernet_hdr(fwd_packet, packet_walker->len);
+				*/
+				
+				/*set destination mac address*/
+				/*memcpy(fwd_eth_hdr->ether_dhost, arphdr->ar_sha, ETHER_ADDR_LEN);*/
+				/*set out src_iface*/
+				/*memcpy(fwd_eth_hdr->ether_dhost, src_iface->addr, ETHER_ADDR_LEN);*/
+				
+				/*re-calculate checksum*/
+				/*
+				struct sr_ip_hdr_t *fwd_ip_hdr = (sr_ip_hdr_t*)(fwd_packet + sizeof(sr_ethernet_hdr_t));
+	 
+				fwd_ip_hdr->ip_sum = 0;
+				fwd_ip_hdr->ip_sum = cksum(fwd_ip_hdr, sizeof(sr_ip_hdr_t));
+				sr_send_packet(sr, fwd_packet, packet_walker->len, src_iface->name);
+				*/
+				sr_send_arprequest(sr, packet_walker, src_iface);
+				packet_walker = packet_walker->next;
+	  
+			}
 
-      /*********************************************************************/
-		printf("Destroying ARP request.");
-      /* Release ARP request entry */
-      sr_arpreq_destroy(&(sr->cache), req);
-    }
-    break;
-  }    
-  default:
-    printf("Unknown ARP opcode => drop packet\n");
-    return;
+		  /*********************************************************************/
+			printf("Destroying ARP request.\n");
+		  /* Release ARP request entry */
+		  sr_arpreq_destroy(&(sr->cache), req);
+		}
+		break;
+	  }    
+	  default:
+		printf("Unknown ARP opcode => drop packet\n");
+		return;
   }
 } /* -- sr_handlepacket_arp -- */
 
