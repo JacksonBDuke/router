@@ -441,8 +441,8 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
 		else{
 			printf("Request isn't for me.\n");
 			/*Added for testing.*/
-			struct sr_rt *dest_iface = longest_prefix_matching(sr, arphdr->ar_tip);
-			sr_send_arprequest(sr, pkt, dest_iface);
+			/*truct sr_rt *dest_iface = longest_prefix_matching(sr, arphdr->ar_tip);*/
+			sr_send_arprequest(sr, pkt, src_iface);
 		}
 		break;
 	  }
