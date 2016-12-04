@@ -630,10 +630,10 @@ we send an port unreachable back to sender
 */
 void sr_ip_packet_for_me(struct sr_instance *sr, struct sr_ip_hdr *ip_hdr) {
 
+	printf("Inside sr_ip_packet_for_me\n");
 	unsigned int ip_hdr_len = ip_hdr->ip_hl * 4;
 	uint8_t *ip_payload = ((uint8_t *)ip_hdr) + ip_hdr_len;
 	if (ip_hdr->ip_p == ip_protocol_icmp) {
-
 		struct sr_icmp_hdr * icmp_hdr = (sr_icmp_hdr_t *)(ip_payload);
 		unsigned int icmp_payload_len = ntohs(ip_hdr->ip_len) - ip_hdr_len - sizeof(sr_icmp_hdr_t);
 
@@ -654,7 +654,7 @@ void sr_ip_packet_for_me(struct sr_instance *sr, struct sr_ip_hdr *ip_hdr) {
 
 
 void sr_send_icmp(struct sr_instance *sr, enum sr_icmp_type type, enum sr_icmp_code code, uint32_t ip_source, uint32_t ip_dest, uint8_t *buf, unsigned int len) {
-
+	printf("Inside sr_send_icmp\n");
 	int icmp_len = sizeof(sr_icmp_hdr_t) + len;
 	struct sr_icmp_hdr *icmp = calloc(icmp_len, 1);
 	memcpy(icmp + 1, buf, len);
