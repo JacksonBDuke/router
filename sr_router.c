@@ -554,6 +554,8 @@ void sr_handlepacket(struct sr_instance* sr,
   
   enum sr_ethertype type = ntohs(hdr->ether_type);
   
+  print_hdrs(pkt, len);
+  
   if (type == ethertype_arp) {
     char *inf_cpy = malloc(sr_IFACE_NAMELEN);
     memcpy(inf_cpy, interface, sr_IFACE_NAMELEN);
