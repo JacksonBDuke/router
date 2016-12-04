@@ -417,6 +417,7 @@ void sr_waitforarp(struct sr_instance *sr, uint8_t *pkt,
 void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
     unsigned int len, struct sr_if *src_iface)
 {
+	printf("Inside sr_handlepacket_arp");
   /* Drop packet if it is less than the size of Ethernet and ARP headers */
   if (len < (sizeof(sr_ethernet_hdr_t) + sizeof(sr_arp_hdr_t)))
   {
@@ -439,9 +440,9 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
   }
   case arp_op_reply:
   {
-    /* Check if reply is for one of my interfaces */
+    /* Check if reply is not? for one of my interfaces */
     if (arphdr->ar_tip != src_iface->ip)
-    {	printf("For one of my interfaces..."); break; }
+    {	printf("Not one of my interfaces..."); break; }
 
     /* Update ARP cache with contents of ARP reply */
     struct sr_arpreq *req = sr_arpcache_insert(&(sr->cache), arphdr->ar_sha, 
