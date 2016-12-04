@@ -481,7 +481,7 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
         }
 
       /*********************************************************************/
-
+		printf("Destroying ARP request.");
       /* Release ARP request entry */
       sr_arpreq_destroy(&(sr->cache), req);
     }
