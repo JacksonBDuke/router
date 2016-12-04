@@ -539,7 +539,7 @@ void sr_handlepacket(struct sr_instance* sr,
     sr_handlepacket_arp(sr, packet, len, interface);
   } else if (type == ethertype_ip) {
     printf("Processing IP packet.\n");
-    handle_ip(sr, packet, len);
+    sr_handlepacket_ip(sr, packet, len);
   } else {
     fprintf(stderr, "invalid packet type id in ethernet header\n");
   }
