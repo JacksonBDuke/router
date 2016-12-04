@@ -557,11 +557,13 @@ void sr_handlepacket(struct sr_instance* sr,
   print_hdrs(pkt, len);
   
   if (type == ethertype_arp) {
+	printf("Processing ARP packet.\n");
     char *inf_cpy = malloc(sr_IFACE_NAMELEN);
     memcpy(inf_cpy, interface, sr_IFACE_NAMELEN);
     sr_handlepacket_arp(sr, pkt, len, inf_cpy);
   } else if (type == ethertype_ip) {
     /* STILL NEED TO ADD THIS*/
+	printf("Processing IP packet.\n");
 	sr_handlepacket_ip(sr, pkt, len);
   } else {
     fprintf(stderr, "invalid packet type id in ethernet header\n");
