@@ -441,7 +441,7 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
   {
     /* Check if reply is for one of my interfaces */
     if (arphdr->ar_tip != src_iface->ip)
-    { break; }
+    {	printf("For one of my interfaces..."); break; }
 
     /* Update ARP cache with contents of ARP reply */
     struct sr_arpreq *req = sr_arpcache_insert(&(sr->cache), arphdr->ar_sha, 
