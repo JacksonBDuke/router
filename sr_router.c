@@ -518,7 +518,7 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
  * the method call.
  *
  *---------------------------------------------------------------------*/
-
+ 
 void sr_handlepacket(struct sr_instance* sr,
         uint8_t * packet/* lent */,
         unsigned int len,
@@ -533,7 +533,7 @@ void sr_handlepacket(struct sr_instance* sr,
 
   /*************************************************************************/
   /* TODO: Handle packets                                                  */
-
+/*
   uint16_t type = ethertype(packet);
   print_hdrs(packet, len);
   if (type == ethertype_arp) {
@@ -546,6 +546,25 @@ void sr_handlepacket(struct sr_instance* sr,
   } else {
     fprintf(stderr, "invalid packet type id in ethernet header\n");
   }
+  */
+  uint8_t *pkt = malloc(len);
+  memcpy(pkt, packet, len);
+
+  sr_ethernet_hdr_t *hdr = get_ethernet_hdr(pkt);
+  
+  enum sr_ethertype type = ntohs(hdr->ether_type);
+  
+  if (type == ethertype_arp) {
+    char *inf_cpy = malloc(sr_IFACE_NAMELEN);
+    memcpy(inf_cpy, interface, sr_IFACE_NAMELEN);
+    sr_handlepacket_arp(sr, pkt, len, inf_cpy);
+  } else if (type == ethertype_ip) {
+    /* STILL NEED TO ADD THIS*/
+	sr_handlepacket_ip(sr, pckt, len);
+  } else {
+    fprintf(stderr, "invalid packet type id in ethernet header\n");
+  }
+  
 
   /*************************************************************************/
 
