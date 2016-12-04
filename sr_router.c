@@ -432,7 +432,9 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
   {
     /* Check if request is for one of my interfaces */
     if (arphdr->ar_tip == src_iface->ip)
-    { sr_send_arpreply(sr, pkt, len, src_iface); }
+    {
+		printf("Request is for me...");
+		sr_send_arpreply(sr, pkt, len, src_iface); }
     break;
   }
   case arp_op_reply:
@@ -453,6 +455,7 @@ void sr_handlepacket_arp(struct sr_instance *sr, uint8_t *pkt,
 
 		struct sr_packet *packet_walker = req->packets;
         while(packet_walker){
+			printf("Sending all packets in linked list...");
             /*forward the packets*/
 			/*
             uint8_t *fwd_packet = packet_walker->buf;
